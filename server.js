@@ -1,66 +1,64 @@
 const express = require('express');
-const mysql = require('mysql2');
+const { Pool } = require('pg');
 const path = require('path');
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Configuración de la base de datos
-const db = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASS || '',
-  database: process.env.DB_NAME || 'productosdb'
-});
-
-db.connect(err => {
-  if (err) {
-    console.error('Error al conectar a la base de datos:', err);
-    return;
-  }
-  console.log('Conectado a MySQL');
+// PostgreSQL Railway config
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 // API de búsqueda
-app.get('/api/productos', (req, res) => {
+app.get('/api/productos', async (req, res) => {
   const busqueda = req.query.busqueda || '';
   const estadoFiltro = req.query.estado || '';
 
   let sql = `SELECT * FROM productos WHERE 
-               (id LIKE ? OR 
-               descripcion LIKE ? OR 
-               color LIKE ? OR
-               cliente LIKE ?)`;
-  let params = [`%${busqueda}%`, `%${busqueda}%`, `%${busqueda}%`, `%${busqueda}%`];
+               (CAST(id AS TEXT) ILIKE $1 OR 
+               descripcion ILIKE $1 OR 
+               color ILIKE $1 OR
+               cliente ILIKE $1)`;
+  let params = [`%${busqueda}%`];
 
   if (estadoFiltro) {
-    sql += ` AND estado = ?`;
+    sql += ` AND estado = $2`;
     params.push(estadoFiltro);
   }
 
-  db.query(sql, params, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
-  });
+  try {
+    const result = await pool.query(sql, params);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // API actualizar producto
-app.put('/api/productos/:id', (req, res) => {
+app.put('/api/productos/:id', async (req, res) => {
   const id = req.params.id;
   const { estado, cliente } = req.body;
 
-  const sql = `UPDATE productos SET estado = ?, cliente = ? WHERE id = ?`;
-  db.query(sql, [estado, cliente, id], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
+  const sql = `UPDATE productos SET estado = $1, cliente = $2 WHERE id = $3`;
+
+  try {
+    await pool.query(sql, [estado, cliente, id]);
     res.json({ message: 'Producto actualizado' });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Servir el frontend para cualquier otra ruta
+// Servir archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Ruta catch-all para SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
