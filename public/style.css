@@ -1,0 +1,119 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #444;
+  }
+  
+  input, select, button {
+    padding: 10px;
+    margin: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  input:focus, select:focus {
+    border-color: #5c9ded;
+    outline: none;
+  }
+  
+  button {
+    background-color: #5c9ded;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #4178c0;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  th {
+    background-color: #5c9ded;
+    color: white;
+  }
+  
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  #filtros {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 600px) {
+    #filtros {
+      flex-direction: column;
+    }
+    
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+  
+    th, td {
+      text-align: right;
+      padding-left: 50%;
+      position: relative;
+    }
+  
+    th::before, td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      width: 45%;
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+  .swal2-popup {
+    font-size: 1.2rem !important;
+    border-radius: 10px !important;
+    animation: zoomIn 0.3s ease;
+  }
+
+  @keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  .swal2-popup {
+    border-radius: 10px !important;
+    font-size: 1rem;
+  }
+  
+  .swal2-confirm {
+    background-color: #5c9ded !important;
+  }
+  
+  .swal2-cancel {
+    background-color: #d33 !important;
+  }
+  

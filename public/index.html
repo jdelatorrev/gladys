@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Productos</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Buscar Productos</h1>
+    <input type="text" id="busqueda" placeholder="Buscar por ID, descripción, color o cliente">
+    <select id="estadoFiltro">
+      <option value="">Todos</option>
+      <option value="disponible">Disponible</option>
+      <option value="vendido">Vendido</option>
+    </select>
+    <button onclick="buscar()">Buscar</button>
+    
+
+    <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Color</th>
+            <th>Costo</th>
+            <th>Precio Final</th>
+            <th>Estado</th>
+            <th>Cliente</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="resultado">
+          <!-- Aquí se cargan los productos -->
+        </tbody>
+      </table>
+      
+
+  <script src="script.js"></script>
+</body>
+</html>
