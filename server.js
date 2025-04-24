@@ -130,6 +130,8 @@ app.get('/api/productos', async (req, res) => {
     params.push(estadoFiltro);
   }
 
+  sql += ` ORDER BY id ASC`;
+
   try {
     const result = await pool.query(sql, params);
     res.json(result.rows);
